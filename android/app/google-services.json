@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "858422798087",
+    "firebase_url": "https://notas-9d272.firebaseio.com",
+    "project_id": "notas-9d272",
+    "storage_bucket": "notas-9d272.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858422798087:android:5be298aeacf9a64e7bc7a2",
+        "android_client_info": {
+          "package_name": "com.santiseijas.notas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858422798087-f2qtjl2gs3vr8084e6erkcbl31kk35kg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEkjQybcz2bfBoxAFVazotYX717yz1wjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858422798087-f2qtjl2gs3vr8084e6erkcbl31kk35kg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
