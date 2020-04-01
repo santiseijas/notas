@@ -15,7 +15,6 @@ class MyApp extends StatelessWidget {
         // Define the default Brightness and Colors
         brightness: Brightness.dark,
         splashColor: Colors.black12,
-        primaryColor: Colors.blueGrey[600],
         // Define the default Font Family
         fontFamily: 'Raleway',
       ),
@@ -34,9 +33,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.grey[800],
         centerTitle: true,
-        elevation: 20,
-        shape: ContinuousRectangleBorder(borderRadius: BorderRadius.vertical(bottom: Radius.circular(50))),
+        elevation: 10,
+        shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(50))),
         title: Text(
           "Notas",
           style: TextStyle(
@@ -51,13 +52,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   buildAddPlayerFab() {
-    return FloatingActionButton(mini: true,backgroundColor: Colors.blueGrey[600],
+    return FloatingActionButton(
+      mini: true,
+      backgroundColor: Colors.grey[800],
       elevation: 0,
       heroTag: null,
       onPressed: () {
         _navigateToAddNotas();
       },
-      child: Icon(Icons.add,color: Colors.white,),
+      child: Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
     );
   }
 
@@ -101,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      padding: const EdgeInsets.only(top: 20.0),
+      padding: const EdgeInsets.only(top: 5.0),
       children:
           snapshot.map((data) => _buildPlayerItem(context, data)).toList(),
     );
@@ -109,48 +115,81 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildPlayerItem(BuildContext context, DocumentSnapshot data) {
     final player = Player.fromSnapshot(data);
+
     return Card(
-        color: Colors.black12,
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Column(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      child: Container(
+        height: 120,
+        child: Row(
           children: <Widget>[
-            Text(
-              player.titulo,
-              style: TextStyle(fontSize: 50),
+            Expanded(
+              flex: 0,
+              child: Container(
+                alignment: Alignment.center,
+                child: Checkbox(
+                  checkColor: Colors.black,
+                  activeColor: Colors.white,
+                  onChanged: (val) {
+                    setState(() {
+                      player.check = val;
+                    });
+                  },
+                  value: player.check,
+                ),
+              ),
             ),
-            Text(player.descripcion),
-            Row(
-              children: <Widget>[
-                FloatingActionButton(
-                  mini: true,
-                  heroTag: null,
-                  backgroundColor: Colors.white,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => AddNotasDialog(
-                          docId: data.documentID,
-                          name: player.titulo,
-                        ),
-                        fullscreenDialog: true,
-                      ),
-                    );
-                  },
-                  child: Icon(Icons.edit),
+            Expanded(
+              flex: 4,
+              child: Container(
+                alignment: Alignment.center,
+                child: Text(
+                  player.titulo,
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
                 ),
-                FloatingActionButton(
-                  mini: true,
-                  backgroundColor: Colors.red,
-                  heroTag: null,
-                  onPressed: () {
-                    _buildConfirmationDialog(context, data.documentID);
-                  },
-                  child: Icon(Icons.delete),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: EdgeInsets.only(left: 5),
+                child: Row(
+                  children: <Widget>[
+                    FloatingActionButton(
+                      mini: true,
+                      heroTag: null,
+                      backgroundColor: Colors.white,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AddNotasDialog(
+                              docId: data.documentID,
+                              name: player.titulo,
+                            ),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.edit),
+                    ),
+                    FloatingActionButton(
+                      mini: true,
+                      backgroundColor: Colors.red,
+                      heroTag: null,
+                      onPressed: () {
+                        _buildConfirmationDialog(context, data.documentID);
+                      },
+                      child: Icon(Icons.delete),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   Future<bool> _buildConfirmationDialog(
