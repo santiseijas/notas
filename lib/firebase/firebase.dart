@@ -34,6 +34,14 @@ class FireBaseAPI {
       });
     });
   }
-
+  static updateCheck(String id, bool newCheck) {
+    Firestore.instance.runTransaction((Transaction transaction) async {
+      await reference.document(id).updateData({
+        "check": newCheck,
+      }).catchError((error) {
+        print(error);
+      });
+    });
+  }
 
 }

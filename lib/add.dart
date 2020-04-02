@@ -68,7 +68,7 @@ class _AddNotasDialogState extends State<AddNotasDialog> {
               children: <Widget>[
                 TextFormField(
                   decoration: InputDecoration(
-                    labelText: 'Titulo',
+                    labelText: 'Titulo',labelStyle: TextStyle(fontSize: 30,),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30)),
                   ),
@@ -85,24 +85,9 @@ class _AddNotasDialogState extends State<AddNotasDialog> {
                 SizedBox(
                   height: 20,
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Descripcion',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                  ),
-                  keyboardType: TextInputType.text,
-                  initialValue: widget.descripcion != null &&
-                          widget.descripcion.isNotEmpty
-                      ? widget.descripcion
-                      : "",
-                  validator: (value) {
-                    return validateName(value);
-                  },
-                  onSaved: (value) => descripcion = value,
-                ),
+
                 FlatButton(
-                  color:Colors.blueGrey[600],
+                  color: Colors.blueGrey[600],
                   onPressed: () {
                     final form = _formAddPlayerKey.currentState;
                     if (form.validate()) {
@@ -120,8 +105,8 @@ class _AddNotasDialogState extends State<AddNotasDialog> {
                   },
                   child: Text(
                     widget.name != null && widget.name.isNotEmpty
-                        ? "UPDATE"
-                        : 'SAVE',
+                        ? "Actualizar"
+                        : 'Guardar',
                     style: Theme.of(context)
                         .textTheme
                         .subhead

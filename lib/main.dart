@@ -12,9 +12,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        dividerColor: Colors.transparent,
         // Define the default Brightness and Colors
         brightness: Brightness.dark,
-        splashColor: Colors.black12,
+        accentColor: Colors.grey,
         // Define the default Font Family
         fontFamily: 'Raleway',
       ),
@@ -86,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: TextStyle(fontSize: 25),
                   ),
                 ),
-                _buildPlayerList(context, snapshot.data.documents),
+                _buildList(context, snapshot.data.documents),
               ],
             ),
           );
@@ -102,93 +103,142 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildPlayerList(
-      BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       padding: const EdgeInsets.only(top: 5.0),
-      children:
-          snapshot.map((data) => _buildPlayerItem(context, data)).toList(),
+      children: snapshot.map((data) => _buildItem(context, data)).toList(),
     );
   }
 
-  Widget _buildPlayerItem(BuildContext context, DocumentSnapshot data) {
-    final player = Player.fromSnapshot(data);
+  Widget _buildItem(BuildContext context, DocumentSnapshot data) {
+    final notas = Notas.fromSnapshot(data);
 
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-      child: Container(
-        height: 120,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              flex: 0,
-              child: Container(
-                alignment: Alignment.center,
-                child: Checkbox(
-                  checkColor: Colors.black,
-                  activeColor: Colors.white,
-                  onChanged: (val) {
-                    setState(() {
-                      player.check = val;
-                    });
-                  },
-                  value: player.check,
+    return notas.descripcion == null
+        ? Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 80,
+                  child: buildTitle(notas, context, data),
                 ),
-              ),
+              ],
             ),
-            Expanded(
-              flex: 4,
-              child: Container(
-                alignment: Alignment.center,
-                child: Text(
-                  player.titulo,
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Container(
-                margin: EdgeInsets.only(left: 5),
-                child: Row(
-                  children: <Widget>[
-                    FloatingActionButton(
-                      mini: true,
-                      heroTag: null,
-                      backgroundColor: Colors.white,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AddNotasDialog(
-                              docId: data.documentID,
-                              name: player.titulo,
-                            ),
-                            fullscreenDialog: true,
+          )
+        : Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Column(
+              children: <Widget>[
+                ExpansionTile(
+                  title: Row(
+                    children: <Widget>[
+                      Container(
+                        height: 70,
+                        child: Checkbox(
+                          tristate: false,
+                          checkColor: Colors.black,
+                          activeColor: Colors.white,
+                          onChanged: (val) {
+                            setState(() {
+                              FireBaseAPI.updateCheck(data.documentID, val);
+                            });
+                          },
+                          value: notas.check,
+                        ),
+                      ),
+                      Container(
+                        width: 200,
+                        child: Text(
+                          notas.titulo,
+                          style: TextStyle(
+                            fontSize: 25,
                           ),
-                        );
-                      },
-                      child: Icon(Icons.edit),
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: Icon(
+                    Icons.list,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                  children: <Widget>[ListTile(leading: Icon(Icons.control_point,size: 10,),title: Text(notas.descripcion))],
+                )
+              ],
+            ),
+          );
+  }
+
+  Row buildTitle(Notas notas, BuildContext context, DocumentSnapshot data) {
+    return Row(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(left: 15),
+          child: Checkbox(
+            tristate: false,
+            checkColor: Colors.black,
+            activeColor: Colors.white,
+            onChanged: (val) {
+              setState(() {
+                FireBaseAPI.updateCheck(data.documentID, val);
+              });
+            },
+            value: notas.check,
+          ),
+        ),
+        Container(
+          width: 200,
+          child: Text(
+            notas.titulo,
+            style: TextStyle(
+              fontSize: 25,
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 5),
+          child: Row(
+            children: <Widget>[
+              FloatingActionButton(
+                mini: true,
+                heroTag: null,
+                backgroundColor: Colors.white,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AddNotasDialog(
+                        docId: data.documentID,
+                        name: notas.titulo,
+                      ),
+                      fullscreenDialog: true,
                     ),
-                    FloatingActionButton(
-                      mini: true,
-                      backgroundColor: Colors.red,
-                      heroTag: null,
-                      onPressed: () {
-                        _buildConfirmationDialog(context, data.documentID);
-                      },
-                      child: Icon(Icons.delete),
-                    ),
-                  ],
+                  );
+                },
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.black,
                 ),
               ),
-            ),
-          ],
+              FloatingActionButton(
+                mini: true,
+                backgroundColor: Colors.red,
+                heroTag: null,
+                onPressed: () {
+                  _buildConfirmationDialog(context, data.documentID);
+                },
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
